@@ -1,54 +1,62 @@
 <template>
     <div class="container">
         <global-header :user="currentUser"></global-header>
-        <column-list :list="testData"></column-list>
+        <column-list :list="list" style="display: none"></column-list>
+        <validate-form @form-submit="onFormSubmit">
+            <div class="mb-3">
+                <label class="form-label">邮箱地址</label>
+                <validate-input :rules="emailRules" v-model="emailVal" placeholder="请输入邮箱地址" type="text" ref="inputRef"></validate-input>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">密码</label>
+                <validate-input type="password" placeholder="请输入密码" :rules="passwordRules" v-model="passwordVal"></validate-input>
+            </div>
+            <template #submit>
+                <span class="btn btn-danger">Submit</span>
+            </template>
+        </validate-form>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, ref } from "vue"
 import "bootstrap/dist/css/bootstrap.min.css"
-import ColumnList, { ColmunProps } from "./components/ColumnList.vue"
+import ColumnList from "./components/ColumnList.vue"
+import ValidateInput, { RulesProp } from "./components/ValidateInput.vue"
+import ValidateForm from "./components/ValidateForm.vue"
 import GlobalHeader, { UserProps } from "./components/GlobalHeader.vue"
+import { testData } from "./testData"
 const currentUser: UserProps = {
     isLogin: true,
-    name: "yee",
+    name: "viking",
 }
-const testData: ColmunProps[] = [
-    {
-        id: 1,
-        title: "test1的专栏",
-        description: "这是test1的专栏，有一段非常有意思的简介，可以更新一下欧",
-        avatar: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=275912806,2672201394&fm=26&gp=0.jpg",
-    },
-    {
-        id: 2,
-        title: "test2的专栏",
-        description: "这是test2的专栏，有一段非常有意思的简介，可以更新一下欧",
-        avatar: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=275912806,2672201394&fm=26&gp=0.jpg",
-    },
-    {
-        id: 3,
-        title: "test3的专栏",
-        description: "这是test3的专栏，有一段非常有意思的简介，可以更新一下欧",
-    },
-    {
-        id: 4,
-        title: "test4的专栏",
-        description: "这是test4的专栏，有一段非常有意思的简介，可以更新一下欧",
-        avatar: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=275912806,2672201394&fm=26&gp=0.jpg",
-    },
-]
 export default defineComponent({
     name: "App",
     components: {
         ColumnList,
         GlobalHeader,
+        ValidateInput,
+        ValidateForm,
     },
     setup() {
+        const emailVal = ref("")
+        const emailRules: RulesProp = [
+            { type: "required", message: "电子邮箱地址不能为空" },
+            { type: "email", message: "请输入正确的电子邮箱格式" },
+        ]
+        const passwordVal = ref("")
+        const passwordRules: RulesProp = [{ type: "required", message: "密码不能为空" }]
+        const onFormSubmit = (result: boolean) => {
+            console.log("result", result)
+        }
         return {
-            testData,
+            list: testData,
             currentUser,
+            emailRules,
+            emailVal,
+            passwordVal,
+            passwordRules,
+            onFormSubmit,
         }
     },
 })

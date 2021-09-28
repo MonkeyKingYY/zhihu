@@ -1,5 +1,5 @@
 {
-  "printWidth": 200, // 超过最大值换行 
+  "printWidth": 200,
     "overrides": [
         {
             "files": ".prettierrc",
